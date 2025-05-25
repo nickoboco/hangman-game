@@ -1,0 +1,180 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 10px; /* Reduced padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #0056b3;
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.category-selection {
+    background-color: #fff;
+    padding: 20px; /* Reduced padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Reduced margin */
+    text-align: center;
+}
+
+.category-selection h2 {
+    margin-top: 0;
+    margin-bottom: 15px; /* Added margin */
+    color: #555;
+}
+
+.category-selection form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px; /* Reduced gap */
+}
+
+.category-selection button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px; /* Reduced padding */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em; /* Slightly smaller font */
+    transition: background-color 0.3s ease;
+}
+
+.category-selection button:hover {
+    background-color: #0056b3;
+}
+
+.hangman-drawing {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em; /* Slightly smaller font */
+    background-color: #e9e9e9;
+    padding: 10px; /* Reduced padding */
+    border-radius: 5px;
+    margin-bottom: 15px; /* Reduced margin */
+    white-space: pre; /* Preserve whitespace and line breaks */
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+.word-display {
+    font-size: 2em; /* Slightly smaller font */
+    margin-bottom: 15px; /* Reduced margin */
+    letter-spacing: 4px; /* Slightly smaller spacing */
+    font-weight: bold;
+}
+
+.guessed-letters {
+    margin-bottom: 15px; /* Reduced margin */
+    color: #666;
+    font-size: 0.9em; /* Slightly smaller font */
+}
+
+.attempts {
+    color: #dc3545; /* Red color for attempts left */
+    font-weight: bold;
+    margin-bottom: 15px; /* Reduced margin */
+    font-size: 0.9em; /* Slightly smaller font */
+}
+
+form {
+    margin-top: 15px; /* Reduced margin */
+    background-color: #fff;
+    padding: 15px; /* Reduced padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Reduced gap */
+}
+
+form label {
+    font-size: 1em; /* Slightly smaller font */
+}
+
+form input[type="text"] {
+    width: 35px; /* Reduced width */
+    padding: 6px; /* Reduced padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 1.1em; /* Slightly smaller font */
+    text-transform: uppercase;
+}
+
+form button {
+    background-color: #28a745; /* Green color for submit */
+    color: white;
+    border: none;
+    padding: 8px 12px; /* Reduced padding */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em; /* Slightly smaller font */
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+.game-over {
+    font-size: 1.3em; /* Slightly smaller font */
+    margin-top: 15px; /* Reduced margin */
+    padding: 20px; /* Reduced padding */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center; /* Center content */
+}
+
+.game-over.win {
+    color: green;
+    border: 2px solid green;
+}
+
+.game-over.lose {
+    color: red;
+    border: 2px solid red;
+}
+
+.game-over p {
+    margin-top: 10px; /* Reduced margin */
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+
+.game-over a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px; /* Reduced margin */
+    display: inline-block;
+}
+
+.game-over a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: red;
+    margin-bottom: 15px; /* Reduced margin */
+    font-weight: bold;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    margin-top: 10px; /* Reduced margin */
+    display: inline-block;
+}
+
+a:hover {
+    text-decoration: underline;
+}

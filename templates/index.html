@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Forca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {# Link to the CSS file #}
     <style>
+        /* Remove or comment out the old inline styles */
+        /*
         body { font-family: sans-serif; text-align: center; margin-top: 50px; }
         .word-display { font-size: 2em; margin-bottom: 20px; }
         .guessed-letters { margin-bottom: 20px; }
@@ -18,7 +21,8 @@
         .category-selection { margin-bottom: 30px; }
         .category-selection button { margin: 5px; }
         .error { color: red; margin-bottom: 20px; }
-        .hangman-drawing { font-family: monospace; margin-bottom: 20px; } /* Style for pre tag */
+        .hangman-drawing { font-family: monospace; margin-bottom: 20px; }
+        */
     </style>
 </head>
 <body>
@@ -64,6 +68,16 @@
         </form>
         <p><a href="{{ url_for('restart') }}">Mudar Categoria / Reiniciar</a></p>
     {% endif %}
+
+    <script>
+        // Auto-focus the letter input field if it exists (i.e., game is in progress)
+        window.onload = function() {
+            var letterInput = document.getElementById('letter');
+            if (letterInput) {
+                letterInput.focus();
+            }
+        };
+    </script>
 
 </body>
 </html>
