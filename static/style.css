@@ -6,7 +6,7 @@ body {
     padding: 10px; /* Reduced padding */
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Centers flex items horizontally */
     min-height: 100vh;
 }
 
@@ -52,16 +52,25 @@ h1 {
     background-color: #0056b3;
 }
 
-.hangman-drawing {
-    font-family: 'Courier New', monospace;
-    font-size: 1.1em; /* Slightly smaller font */
-    background-color: #e9e9e9;
-    padding: 10px; /* Reduced padding */
-    border-radius: 5px;
-    margin-bottom: 15px; /* Reduced margin */
-    white-space: pre; /* Preserve whitespace and line breaks */
-    text-align: left;
-    border: 1px solid #ccc;
+/* Style for the main game container to ensure its contents are centered */
+#game-in-progress-container {
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+.hangman-image {
+    display: block; /* Make it a block element */
+    margin: 0 auto 15px auto; /* Center the image and add bottom margin */
+    max-width: 100%; /* Ensure it doesn't overflow its container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 200px; /* Example: limit height */
 }
 
 .word-display {
@@ -86,13 +95,16 @@ h1 {
 
 form {
     margin-top: 15px; /* Reduced margin */
-    background-color: #fff;
-    padding: 15px; /* Reduced padding */
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Form background is now handled by #game-in-progress-container */
+    padding: 0; /* Remove padding from form itself */
+    border-radius: 0; /* Remove border-radius from form itself */
+    box-shadow: none; /* Remove box-shadow from form itself */
     display: flex;
     align-items: center;
     gap: 8px; /* Reduced gap */
+    /* Center the form content if needed, though align-items on parent should handle it */
+    justify-content: center;
+    margin-bottom: 15px; /* Add margin below the form */
 }
 
 form label {
@@ -124,6 +136,29 @@ form button:hover {
     background-color: #218838;
 }
 
+/* Style for the hint button */
+.hint-button {
+    background-color: #ffc107; /* Yellow color */
+    color: #212529; /* Dark text */
+    border: none;
+    padding: 8px 15px; /* Match other buttons */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em; /* Match other buttons */
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Add space above if not in form */
+}
+
+.hint-button:hover {
+    background-color: #e0a800;
+}
+
+.hint-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
 .game-over {
     font-size: 1.3em; /* Slightly smaller font */
     margin-top: 15px; /* Reduced margin */
@@ -132,6 +167,9 @@ form button:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     text-align: center; /* Center content */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
 }
 
 .game-over.win {
@@ -149,18 +187,26 @@ form button:hover {
     margin-bottom: 10px; /* Reduced margin */
 }
 
-
-.game-over a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 10px; /* Reduced margin */
-    display: inline-block;
+/* Style for the restart button */
+.restart-button {
+    display: inline-block; /* Make it behave like a block for padding/margin */
+    background-color: #6c757d; /* Grey color */
+    color: white;
+    border: none;
+    padding: 8px 15px; /* Match other buttons */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em; /* Match other buttons */
+    text-decoration: none; /* Remove underline */
+    margin-top: 15px; /* Add some space above */
+    transition: background-color 0.3s ease;
 }
 
-.game-over a:hover {
-    text-decoration: underline;
+.restart-button:hover {
+    background-color: #5a6268;
+    text-decoration: none; /* Ensure no underline on hover */
 }
+
 
 .error {
     color: red;
@@ -168,13 +214,16 @@ form button:hover {
     font-weight: bold;
 }
 
+/* Remove or adjust the generic 'a' style if it conflicts */
+/*
 a {
     color: #007bff;
     text-decoration: none;
-    margin-top: 10px; /* Reduced margin */
+    margin-top: 10px;
     display: inline-block;
 }
 
 a:hover {
     text-decoration: underline;
 }
+*/

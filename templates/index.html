@@ -32,51 +32,172 @@
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    {% if game_over %}
-        <div class="game-over {% if outcome == 'win' %}win{% else %}lose{% endif %}">
-            {% if outcome == 'win' %}
-                Parabéns! Você ganhou!
-            {% else %}
-                Fim de jogo! Você perdeu.
-            {% endif %}
-            <p>A palavra era: <strong>{{ correct_word }}</strong></p>
-            <pre class="hangman-drawing">{{ hangman_drawing }}</pre> {# Display final hangman #}
-            <p><a href="{{ url_for('restart') }}">Jogar Novamente</a></p>
-        </div>
-    {% elif categories %}
-        {# Show category selection if categories are available and no game is active #}
-        <div class="category-selection">
-            <h2>Escolha uma Categoria:</h2>
-            <form action="{{ url_for('start_game_route') }}" method="post">
-                {% for category in categories %}
-                    <button type="submit" name="category" value="{{ category }}">{{ category }}</button>
-                {% endfor %}
-            </form>
-        </div>
-    {% else %}
-        {# Show game interface #}
-        <p>Categoria: <strong>{{ current_category }}</strong></p>
-        <pre class="hangman-drawing">{{ hangman_drawing }}</pre> {# Display current hangman #}
-        <div class="word-display">{{ display_word }}</div>
-        <div class="guessed-letters">Letras já usadas: {{ guessed_letters | join(', ') }}</div>
-        <div class="attempts">Tentativas restantes: {{ attempts_left }}</div>
+    {# Game Over State - Initially hidden, shown by JS #}
+    <div id="game-over-container" class="game-over" style="display: none;">
+        <div id="game-over-message"></div>
+        <p>A palavra era: <strong id="correct-word"></strong></p>
+        {# Hangman image will be updated here too #}
+        <img id="final-hangman-image" src="" alt="Hangman Drawing" class="hangman-image">
+        <p><a href="{{ url_for('restart') }}" class="restart-button">Jogar Novamente</a></p>
+    </div>
 
-        <form action="{{ url_for('guess') }}" method="post">
-            <label for="letter">Adivinhe uma letra:</label>
-            <input type="text" id="letter" name="letter" maxlength="1" required>
-            <button type="submit">Enviar</button>
-        </form>
-        <p><a href="{{ url_for('restart') }}">Mudar Categoria / Reiniciar</a></p>
-    {% endif %}
+    {# Game In Progress State - Initially shown or hidden by Flask/JS #}
+    <div id="game-in-progress-container">
+        {% if categories %}
+            {# Show category selection if categories are available and no game is active #}
+            <div class="category-selection">
+                <h2>Escolha uma Categoria:</h2>
+                <form action="{{ url_for('start_game_route') }}" method="post">
+                    {% for category in categories %}
+                        <button type="submit" name="category" value="{{ category }}">{{ category }}</button>
+                    {% endfor %}
+                </form>
+            </div>
+        {% else %}
+            {# Show game interface #}
+            <p>Categoria: <strong id="current-category">{{ current_category }}</strong></p>
+            {# Display current hangman image #}
+            <img id="hangman-image" src="{{ url_for('static', filename=hangman_image) }}" alt="Hangman Drawing" class="hangman-image">
+            <div id="word-display" class="word-display">{{ display_word }}</div>
+            <div id="guessed-letters" class="guessed-letters">Letras já usadas: {{ guessed_letters | join(', ') }}</div>
+            <div id="attempts" class="attempts">Tentativas restantes: {{ attempts_left }}</div>
+
+            <form id="guess-form" action="{{ url_for('guess') }}" method="post">
+                <label for="letter">Adivinhe uma letra:</label>
+                <input type="text" id="letter" name="letter" maxlength="1" required>
+                <button type="submit">Enviar</button>
+            </form>
+
+            {# Add Hint Button #}
+            <button id="hint-button" class="hint-button">Dica (-1 tentativa)</button>
+
+            <p><a href="{{ url_for('restart') }}" class="restart-button">Mudar Categoria / Reiniciar</a></p>
+        {% endif %}
+    </div>
+
 
     <script>
+        // filepath: c:\hangman\templates\index.html
+        const guessForm = document.getElementById('guess-form');
+        const letterInput = document.getElementById('letter');
+        const wordDisplay = document.getElementById('word-display');
+        const guessedLettersDisplay = document.getElementById('guessed-letters');
+        const attemptsDisplay = document.getElementById('attempts');
+        const hangmanImage = document.getElementById('hangman-image');
+        const gameInProgressContainer = document.getElementById('game-in-progress-container');
+        const gameOverContainer = document.getElementById('game-over-container');
+        const gameOverMessage = document.getElementById('game-over-message');
+        const correctWordDisplay = document.getElementById('correct-word');
+        const finalHangmanImage = document.getElementById('final-hangman-image');
+        const hintButton = document.getElementById('hint-button'); // Get the hint button
+
+
         // Auto-focus the letter input field if it exists (i.e., game is in progress)
         window.onload = function() {
-            var letterInput = document.getElementById('letter');
             if (letterInput) {
                 letterInput.focus();
             }
         };
+
+        // Function to update the game display based on JSON data
+        function updateGameDisplay(data) {
+            wordDisplay.textContent = data.display_word;
+            guessedLettersDisplay.textContent = 'Letras já usadas: ' + data.guessed_letters.join(', ');
+            attemptsDisplay.textContent = 'Tentativas restantes: ' + data.attempts_left;
+            hangmanImage.src = "{{ url_for('static', filename='') }}" + data.hangman_image; // Update image source
+
+            // Clear input and re-focus if game is not over
+            if (!data.game_over) {
+                 if (letterInput) { // Check if input exists (it won't on game over)
+                    letterInput.value = '';
+                    letterInput.focus();
+                 }
+            }
+
+
+            // Check if game is over
+            if (data.game_over) {
+                gameInProgressContainer.style.display = 'none'; // Hide game elements
+                gameOverContainer.style.display = 'block'; // Show game over message
+
+                if (data.outcome === 'win') {
+                    gameOverMessage.textContent = 'Parabéns! Você ganhou!';
+                    gameOverContainer.classList.remove('lose');
+                    gameOverContainer.classList.add('win');
+                } else {
+                    gameOverMessage.textContent = 'Fim de jogo! Você perdeu.';
+                    gameOverContainer.classList.remove('win');
+                    gameOverContainer.classList.add('lose');
+                }
+                correctWordDisplay.textContent = data.correct_word;
+                finalHangmanImage.src = "{{ url_for('static', filename='') }}" + data.hangman_image; // Show final image
+            }
+        }
+
+
+        if (guessForm) {
+            guessForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission (page reload)
+
+                const guess = letterInput.value.trim().toUpperCase();
+
+                if (guess.length === 1 && guess.match(/[A-Z]/)) {
+                    // Send guess to the server using fetch API
+                    fetch(guessForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'letter=' + encodeURIComponent(guess)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        updateGameDisplay(data); // Use the new function to update display
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Optionally display an error message to the user
+                    });
+                } else {
+                    // Optional: Provide feedback for invalid input
+                    console.log('Entrada inválida. Digite apenas uma letra.');
+                    letterInput.value = '';
+                    letterInput.focus();
+                }
+            });
+        }
+
+        // Add event listener for the hint button
+        if (hintButton) {
+            hintButton.addEventListener('click', function() {
+                 // Disable button temporarily to prevent multiple clicks
+                 hintButton.disabled = true;
+
+                 fetch("{{ url_for('hint') }}", {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json', // No body needed for this POST, but keep header
+                     }
+                 })
+                 .then(response => {
+                     if (!response.ok) {
+                         // Handle server-side errors (e.g., no attempts left)
+                         return response.json().then(err => { throw new Error(err.error || 'Erro ao obter dica'); });
+                     }
+                     return response.json();
+                 })
+                 .then(data => {
+                     updateGameDisplay(data); // Update display based on hint result
+                     hintButton.disabled = false; // Re-enable button
+                 })
+                 .catch(error => {
+                     console.error('Error getting hint:', error);
+                     alert(error.message); // Show error message to user
+                     hintButton.disabled = false; // Re-enable button
+                 });
+            });
+        }
+
     </script>
 
 </body>
