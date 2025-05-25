@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Forca</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        .word-display { font-size: 2em; margin-bottom: 20px; }
+        .guessed-letters { margin-bottom: 20px; }
+        .attempts { color: red; }
+        .game-over { font-size: 1.5em; margin-top: 20px; }
+        .win { color: green; }
+        .lose { color: red; }
+        form { margin-top: 20px; }
+        input[type="text"] { width: 50px; text-align: center; text-transform: uppercase; }
+        button { padding: 10px 20px; cursor: pointer; }
+        .category-selection { margin-bottom: 30px; }
+        .category-selection button { margin: 5px; }
+        .error { color: red; margin-bottom: 20px; }
+        .hangman-drawing { font-family: monospace; margin-bottom: 20px; } /* Style for pre tag */
+    </style>
+</head>
+<body>
+    <h1>Jogo da Forca</h1>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if game_over %}
+        <div class="game-over {% if outcome == 'win' %}win{% else %}lose{% endif %}">
+            {% if outcome == 'win' %}
+                Parabéns! Você ganhou!
+            {% else %}
+                Fim de jogo! Você perdeu.
+            {% endif %}
+            <p>A palavra era: <strong>{{ correct_word }}</strong></p>
+            <pre class="hangman-drawing">{{ hangman_drawing }}</pre> {# Display final hangman #}
+            <p><a href="{{ url_for('restart') }}">Jogar Novamente</a></p>
+        </div>
+    {% elif categories %}
+        {# Show category selection if categories are available and no game is active #}
+        <div class="category-selection">
+            <h2>Escolha uma Categoria:</h2>
+            <form action="{{ url_for('start_game_route') }}" method="post">
+                {% for category in categories %}
+                    <button type="submit" name="category" value="{{ category }}">{{ category }}</button>
+                {% endfor %}
+            </form>
+        </div>
+    {% else %}
+        {# Show game interface #}
+        <p>Categoria: <strong>{{ current_category }}</strong></p>
+        <pre class="hangman-drawing">{{ hangman_drawing }}</pre> {# Display current hangman #}
+        <div class="word-display">{{ display_word }}</div>
+        <div class="guessed-letters">Letras já usadas: {{ guessed_letters | join(', ') }}</div>
+        <div class="attempts">Tentativas restantes: {{ attempts_left }}</div>
+
+        <form action="{{ url_for('guess') }}" method="post">
+            <label for="letter">Adivinhe uma letra:</label>
+            <input type="text" id="letter" name="letter" maxlength="1" required>
+            <button type="submit">Enviar</button>
+        </form>
+        <p><a href="{{ url_for('restart') }}">Mudar Categoria / Reiniciar</a></p>
+    {% endif %}
+
+</body>
+</html>
