@@ -1,6 +1,8 @@
-# Web Hangman Game (Brazilian Portuguese)
+# Web Hangman Game PT-BR - VIBE CODING
 
 This is a simple web-based Hangman game implemented using Python with the Flask framework. The game is played in Brazilian Portuguese and features category selection, a visual hangman drawing that updates with incorrect guesses, and an optional hint button.
+
+![image](https://github.com/user-attachments/assets/237a12ef-a7ae-4a06-93db-a639bbbf6df8)
 
 ## How to Play
 
